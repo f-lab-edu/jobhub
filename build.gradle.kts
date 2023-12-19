@@ -19,7 +19,6 @@ dependencies {
     implementation("org.apache.commons:commons-lang3:3.12.0")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.data:spring-data-jpa")
-    implementation("org.springframework.boot:spring-boot-autoconfigure")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
