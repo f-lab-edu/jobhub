@@ -10,5 +10,3 @@ public class JobHubApplication {
         SpringApplication.run(JobHubApplication.class, args);
     }
 }
-
-
