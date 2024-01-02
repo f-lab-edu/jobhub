@@ -1,5 +1,8 @@
 plugins {
+    //  Gradle 8.0부터 하나 이상의 Java 도구 체인 저장소를 명시적으로 선언
+    //  foojay-toolchains Gradle plugin 선언
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.7.0'
+    // gradle enterprise는 빌드 속도를 높이고, 빌드 신뢰성을 향상시키며 빌드 디버깅을 가속화할 수 있는 데이터 제공
     id("com.gradle.enterprise") version "3.16.1"
 }
 
