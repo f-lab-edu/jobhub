@@ -1,18 +1,19 @@
 package com.jobhub.controller.dto;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.time.LocalDateTime;
 
-@Builder
+@RequiredArgsConstructor
 @Getter
 public class RecruitmentResponse {
-    private Long id;
-    private String url;
-    private String provider;
-    private String title;
-    private String companyName;
-    private String companyAddress;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
+    private final Long id;
+    private final String url;
+    private final String provider;
+    private final String title;
+    private final String companyName;
+    private final String companyAddress;
+    private final LocalDateTime startDate;
+    private final LocalDateTime endDate;
 }

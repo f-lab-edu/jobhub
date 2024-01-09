@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public class LocationSubCategoryResponse {
-    private final Long id;
-    private final String name;
+public class BookmarkResponse {
+    private final String userId;
+    private final Boolean isBookmark;
 }

@@ -22,27 +22,15 @@ public class RecruitmentController {
                                                              @RequestParam(defaultValue = "20") Integer pageSize,
                                                              @RequestParam(defaultValue = "1") Integer pageNo,
                                                              @RequestParam(defaultValue = "start_date") String sortBy) {
-        RecruitmentResponse dummy1 = RecruitmentResponse.builder()
-                .id(1L)
-                .url("url")
-                .provider("wanted")
-                .title("당근 백엔드 엔지니어")
-                .companyName("당근")
-                .companyAddress("서울")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusDays(10))
-                .build();
+        RecruitmentResponse dummy1 = new RecruitmentResponse(1L, "url", "wanted"
+                , "당근 백엔드 엔지니어", "당근", "서울"
+                , LocalDateTime.now(), LocalDateTime.now().plusDays(10));
 
-        RecruitmentResponse dummy2 = RecruitmentResponse.builder()
-                .id(2L)
-                .url("url")
-                .provider("wanted")
-                .title("라인 백엔드 엔지니어")
-                .companyName("라인")
-                .companyAddress("도쿄")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusDays(10))
-                .build();
+
+        RecruitmentResponse dummy2 = new RecruitmentResponse(2L, "url", "wanted"
+                , "라인 백엔드 엔지니어", "라인", "도쿄"
+                , LocalDateTime.now(), LocalDateTime.now().plusDays(10));
+
         return new PageResponse<>(2, List.of(dummy1, dummy2));
     }
 

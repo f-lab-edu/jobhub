@@ -1,11 +1,9 @@
 package com.jobhub.controller.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
-@Builder
-@Getter
+@RequiredArgsConstructor
 public class CareerCategoryResponse {
-    private Long id;
-    private String career;
+    private final Long id;
+    private final String career;
 }

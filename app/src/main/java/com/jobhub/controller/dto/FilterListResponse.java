@@ -1,13 +1,14 @@
 package com.jobhub.controller.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Getter
 public class FilterListResponse {
-    private List<JobCategoryResponse> categories;
-    private List<LocationCategoryResponse> locations;
-    private int maxCareer;
+    private final List<JobCategoryResponse> categories;
+    private final List<LocationCategoryResponse> locations;
+    private final int maxCareer;
 }

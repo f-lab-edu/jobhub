@@ -1,13 +1,14 @@
 package com.jobhub.controller.dto;
 
-import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
 import java.util.List;
 
-@Builder
+@RequiredArgsConstructor
 @Getter
 public class LocationCategoryResponse {
-    private Long id;
-    private String name;
-    private List<LocationSubCategoryResponse> subCategories;
+    private final Long id;
+    private final String name;
+    private final List<LocationSubCategoryResponse> subCategories;
 }
