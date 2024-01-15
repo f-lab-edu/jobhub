@@ -27,7 +27,7 @@ class BookmarkControllerTest {
     @Test
     void 북마크_업데이트_확인() throws Exception {
 
-        BookmarkRequest updateRequest = new BookmarkRequest("user123", true);
+        BookmarkRequest updateRequest = new BookmarkRequest("user123", true,null);
         String jsonInput = objectMapper.writeValueAsString(updateRequest);
 
         String expectResponseUserId = "user123";

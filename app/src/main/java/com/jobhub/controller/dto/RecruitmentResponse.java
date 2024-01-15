@@ -2,7 +2,6 @@ package com.jobhub.controller.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
@@ -16,4 +15,5 @@ public class RecruitmentResponse {
     private final String companyAddress;
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
+
 }

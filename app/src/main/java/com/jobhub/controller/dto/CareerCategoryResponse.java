@@ -6,4 +6,5 @@ import lombok.RequiredArgsConstructor;
 public class CareerCategoryResponse {
     private final Long id;
     private final String career;
+
 }

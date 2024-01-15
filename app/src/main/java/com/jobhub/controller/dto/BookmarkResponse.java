@@ -8,4 +8,5 @@ import lombok.RequiredArgsConstructor;
 public class BookmarkResponse {
     private final String userId;
     private final Boolean isBookmark;
+    private final RecruitmentResponse recruitment;
 }
