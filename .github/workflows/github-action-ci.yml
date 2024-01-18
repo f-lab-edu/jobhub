@@ -21,7 +21,7 @@ jobs:
           java-version: '17'
           cache: 'gradle'
       - name: Test with Gradle
-        uses: gradle/gradle-build-action@v3
+        uses: gradle/gradle-build-action@v2
         with:
           arguments: test
 
