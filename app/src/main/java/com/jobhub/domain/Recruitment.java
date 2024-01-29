@@ -13,6 +13,7 @@ public class Recruitment {
     private String url;
     private String provider;
     private String title;
+    private String department;
     private String companyName;
     private String companyAddress;
     private LocalDateTime startDate;

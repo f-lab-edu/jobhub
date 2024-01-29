@@ -1,10 +1,13 @@
 package com.jobhub.controller;
 
+import com.jobhub.controller.dto.RecruitmentRequest;
 import com.jobhub.controller.dto.RecruitmentResponse;
+import com.jobhub.domain.Recruitment;
 import com.jobhub.global.wrapper.PageResponse;
 import com.jobhub.service.RecruitmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,6 +46,13 @@ public class RecruitmentController {
 
         return new PageResponse<>(responseList.size(),responseList);
 
+    }
+
+
+    @PostMapping("/recruitments/new")
+    public void createRecruitment(RecruitmentRequest recruitmentRequest) {
+      Recruitment recruitmentRequestEntity = recruitmentRequest.toEntity(recruitmentRequest);
+      recruitmentService.saveRecruitment(recruitmentRequestEntity);
     }
 
 }

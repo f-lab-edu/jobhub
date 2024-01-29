@@ -8,12 +8,12 @@ import com.jobhub.domain.JobCategory;
 import com.jobhub.domain.JobSubCategory;
 import com.jobhub.domain.LocationCategory;
 import com.jobhub.domain.LocationSubCategory;
-import com.jobhub.service.FilterService;
+import com.jobhub.repository.JobCategoryRepository;
+import com.jobhub.repository.LocationCategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -39,8 +38,12 @@ class FilterControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
-    FilterService filterService;
+    @Autowired
+    private JobCategoryRepository jobCategoryRepository;
+
+    @Autowired
+    private LocationCategoryRepository locationCategoryRepository;
+
 
     @Test
     void 각_필터목록_값들이_일치하는지_확인() throws Exception {
@@ -57,14 +60,14 @@ class FilterControllerTest {
 
 
         LocationSubCategory locationSubCategory = new LocationSubCategory(1L, "달서구");
-        LocationCategory locationCategory = LocationCategory.builder()
+        List<LocationCategory> locationCategory = List.of(LocationCategory.builder()
                 .id(1L)
                 .name("대구")
                 .subCategories(List.of(locationSubCategory))
-                .build();
+                .build());
 
-        given(filterService.findAllJobCategory()).willReturn(jobCategoriesResponse);
-        given(filterService.findAllLocationCategory()).willReturn(List.of(locationCategory));
+        jobCategoryRepository.save(jobCategoriesResponse.get(0));
+        locationCategoryRepository.save(locationCategory.get(0));
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/v1/filters"))

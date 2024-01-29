@@ -5,12 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jobhub.controller.dto.RecruitmentResponse;
 import com.jobhub.domain.Recruitment;
 import com.jobhub.global.wrapper.PageResponse;
-import com.jobhub.service.RecruitmentService;
+import com.jobhub.repository.RecruitmentRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -18,10 +17,8 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -37,37 +34,36 @@ class RecruitmentControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
-    @MockBean
-    private RecruitmentService recruitmentService;
+    @Autowired
+    RecruitmentRepository recruitmentRepository;
 
     @Test
-    void 채용공고리스트_일치하는지_확인() throws Exception {
+    void 저장된_채용공고_조회() throws Exception {
 
         //given
-        Recruitment recruitment1 = Recruitment.builder()
+        Recruitment recruitment = Recruitment.builder()
                 .id(1L)
-                .url("url")
-                .provider("wanted")
-                .title("당근 백엔드 엔지니어")
-                .companyName("당근")
-                .companyAddress("서울")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusDays(10))
-                .build();
-
-        Recruitment recruitment2 = Recruitment.builder()
-                .id(2L)
-                .url("url")
-                .provider("wanted")
+                .url("https://www.Line.com")
                 .title("라인 백엔드 엔지니어")
                 .companyName("라인")
                 .companyAddress("도쿄")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusDays(10))
+                .startDate(LocalDateTime.of(2021, 8, 1, 0, 0))
+                .endDate(LocalDateTime.of(2021, 8, 31, 0, 0))
                 .build();
 
-        given(recruitmentService.findAllRecruitment(1, 20, "startDate"))
-                .willReturn(List.of(recruitment1, recruitment2));
+
+        Recruitment recruitment2 = Recruitment.builder()
+                .id(2L)
+                .url("https://www.carrot.com")
+                .title("당근 백엔드 엔지니어")
+                .companyName("당근")
+                .companyAddress("서울")
+                .startDate(LocalDateTime.of(2021, 8, 1, 0, 0))
+                .endDate(LocalDateTime.of(2021, 8, 31, 0, 0))
+                .build();
+
+        recruitmentRepository.save(recruitment);
+        recruitmentRepository.save(recruitment2);
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/v1/recruitments")
                         .param("pageSize", "20")
@@ -88,10 +84,10 @@ class RecruitmentControllerTest {
         RecruitmentResponse response2 = pageResponse.getContents().get(1);
 
         //then
-        assertThat(response1.getTitle()).isEqualTo("당근 백엔드 엔지니어");
-        assertThat(response1.getCompanyName()).isEqualTo("당근");
-        assertThat(response2.getCompanyName()).isEqualTo("라인");
-        assertThat(response2.getCompanyAddress()).isEqualTo("도쿄");
+        assertThat(response1.getCompanyName()).isEqualTo("라인");
+        assertThat(response1.getCompanyAddress()).isEqualTo("도쿄");
+        assertThat(response2.getTitle()).isEqualTo("당근 백엔드 엔지니어");
+        assertThat(response2.getCompanyName()).isEqualTo("당근");
 
 
     }
