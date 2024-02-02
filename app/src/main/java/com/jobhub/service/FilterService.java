@@ -24,4 +24,13 @@ public class FilterService {
         return locationCategoryRepository.findAll();
     }
 
+    public JobCategory saveJobCategory(JobCategory jobCategory) {
+        return jobCategoryRepository.save(jobCategory);
+    }
+
+
+    public LocationCategory saveLocationCategory(LocationCategory locationCategory) {
+        return locationCategoryRepository.save(locationCategory);
+    }
+
 }

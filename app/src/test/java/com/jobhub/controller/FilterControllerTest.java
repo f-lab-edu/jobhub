@@ -2,14 +2,16 @@ package com.jobhub.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jobhub.controller.dto.FilterListResponse;
+import com.jobhub.controller.dto.JobCategoryRequest;
 import com.jobhub.controller.dto.JobCategoryResponse;
+import com.jobhub.controller.dto.JobSubCategoryRequest;
+import com.jobhub.controller.dto.LocationCategoryRequest;
 import com.jobhub.controller.dto.LocationCategoryResponse;
+import com.jobhub.controller.dto.LocationSubCategoryRequest;
 import com.jobhub.domain.JobCategory;
 import com.jobhub.domain.JobSubCategory;
 import com.jobhub.domain.LocationCategory;
 import com.jobhub.domain.LocationSubCategory;
-import com.jobhub.repository.JobCategoryRepository;
-import com.jobhub.repository.LocationCategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -24,6 +26,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -38,37 +41,21 @@ class FilterControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private JobCategoryRepository jobCategoryRepository;
-
-    @Autowired
-    private LocationCategoryRepository locationCategoryRepository;
-
 
     @Test
     void 각_필터목록_값들이_일치하는지_확인() throws Exception {
-
         //given
-        JobSubCategory jobSubCategory = new JobSubCategory(1L, "웹 백엔드 엔지니어", 1);
-        List<JobCategory> jobCategoriesResponse=
-                List.of(JobCategory.builder()
-                        .id(1L)
-                        .title("엔지니어")
-                        .totalCount(10)
-                        .subCategories(List.of(jobSubCategory))
-                        .build());
+        JobSubCategoryRequest jobSubCategoryRequest = new JobSubCategoryRequest(1L, "웹 백엔드 엔지니어", 1);
+        JobCategoryRequest jobCategoryRequest = new JobCategoryRequest(
+                1L, "엔지니어", 10, List.of(jobSubCategoryRequest));
+
+        LocationSubCategoryRequest locationSubCategory = new LocationSubCategoryRequest(1L, "달서구");
+        LocationCategoryRequest locationCategoryRequest = new LocationCategoryRequest(1L, "대구", List.of(locationSubCategory));
 
 
-        LocationSubCategory locationSubCategory = new LocationSubCategory(1L, "달서구");
-        List<LocationCategory> locationCategory = List.of(LocationCategory.builder()
-                .id(1L)
-                .name("대구")
-                .subCategories(List.of(locationSubCategory))
-                .build());
+        mockMvcPerformPostRequest("/api/v1/filters/job", jobCategoryRequest);
 
-        jobCategoryRepository.save(jobCategoriesResponse.get(0));
-        locationCategoryRepository.save(locationCategory.get(0));
-
+        mockMvcPerformPostRequest("/api/v1/filters/location", locationCategoryRequest);
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/v1/filters"))
                 .andDo(print())
@@ -91,4 +78,61 @@ class FilterControllerTest {
 
     }
 
+    @Test
+    void 직업_경력_필터_등록() throws Exception {
+        //given
+        JobSubCategory jobSubCategory = new JobSubCategory(1L, "웹 백엔드 엔지니어", 1);
+        JobCategory jobCategoriesRequest =
+                JobCategory.builder()
+                        .id(1L)
+                        .title("엔지니어")
+                        .totalCount(10)
+                        .subCategories(List.of(jobSubCategory))
+                        .build();
+
+
+        //when
+        ResultActions resultActions = mockMvcPerformPostRequest("/api/v1/filters/job", jobCategoriesRequest);
+        MvcResult mvcResult = resultActions.andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        JobCategoryResponse response = objectMapper.readValue(contentAsString, JobCategoryResponse.class);
+
+        assertThat(response.getTitle()).isEqualTo("엔지니어");
+        assertThat(response.getSubCategories().get(0).getTitle()).isEqualTo("웹 백엔드 엔지니어");
+
+
+    }
+
+    @Test
+    void 지역_필터_등록() throws Exception {
+        //given
+        LocationSubCategory locationSubCategory = new LocationSubCategory(1L, "달서구");
+        LocationCategory locationCategoriesRequest = LocationCategory.builder()
+                .id(1L)
+                .name("대구")
+                .subCategories(List.of(locationSubCategory))
+                .build();
+
+        //when
+        ResultActions resultActions = mockMvcPerformPostRequest("/api/v1/filters/location", locationCategoriesRequest);
+        MvcResult mvcResult = resultActions.andReturn();
+        String contentAsString = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
+        LocationCategoryResponse response = objectMapper.readValue(contentAsString, LocationCategoryResponse.class);
+
+        //then
+        assertThat(response.getName()).isEqualTo("대구");
+        assertThat(response.getSubCategories().get(0).getName()).isEqualTo("달서구");
+
+    }
+
+    public ResultActions mockMvcPerformPostRequest(String url, Object content) throws Exception {
+        return mockMvc.perform(post(url)
+                        .content(objectMapper.writeValueAsString(content))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
+
+
+    }
 }

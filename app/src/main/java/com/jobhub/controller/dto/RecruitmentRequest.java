@@ -14,6 +14,7 @@ public class RecruitmentRequest {
     private final String provider;
     private final String title;
     private final String department;
+    private final String career;
     private final String companyName;
     private final String companyAddress;
     private final LocalDateTime startDate;
