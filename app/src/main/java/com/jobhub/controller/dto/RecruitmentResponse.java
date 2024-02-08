@@ -17,7 +17,7 @@ public class RecruitmentResponse {
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
 
-    public static RecruitmentResponse fromEntity(Recruitment recruitment) {
+    public static RecruitmentResponse fromEntity(final Recruitment recruitment) {
         return new RecruitmentResponse(
                 recruitment.getId(),
                 recruitment.getUrl(),

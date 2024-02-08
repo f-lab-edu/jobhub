@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 @Getter
 @RequiredArgsConstructor
 public class RecruitmentRequest {
-    private final Long id;
     private final String url;
     private final String provider;
     private final String title;
@@ -21,9 +20,8 @@ public class RecruitmentRequest {
     private final LocalDateTime endDate;
 
 
-    public Recruitment toEntity(RecruitmentRequest recruitmentRequest) {
+    public static Recruitment toEntity(RecruitmentRequest recruitmentRequest) {
         return Recruitment.builder()
-                .id(recruitmentRequest.getId())
                 .url(recruitmentRequest.getUrl())
                 .provider(recruitmentRequest.getProvider())
                 .title(recruitmentRequest.getTitle())

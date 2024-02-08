@@ -46,9 +46,7 @@ public class RecruitmentController {
                 ))
                 .toList();
 
-
         return new PageResponse<>(responseList.size(), responseList);
-
     }
 
 
@@ -56,6 +54,14 @@ public class RecruitmentController {
     public ResponseEntity<RecruitmentResponse> createRecruitment(@RequestBody RecruitmentRequest recruitmentRequest) {
         Recruitment recruitment = recruitmentRequest.toEntity(recruitmentRequest);
         Recruitment response = recruitmentService.saveRecruitment(recruitment);
+        RecruitmentResponse responseDTO = RecruitmentResponse.fromEntity(response);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/recruitments/update")
+    public ResponseEntity<RecruitmentResponse> updateRecruitment(@RequestBody RecruitmentRequest recruitmentRequest) {
+        Recruitment recruitment = RecruitmentRequest.toEntity(recruitmentRequest);
+        Recruitment response = recruitmentService.updateRecruitmentIfNeeded(recruitment);
         RecruitmentResponse responseDTO = RecruitmentResponse.fromEntity(response);
         return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
