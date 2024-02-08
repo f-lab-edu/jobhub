@@ -11,16 +11,21 @@ import java.util.List;
 public class JobCategoryResponse {
     private final Long id;
     private final String title;
-    private final int totalCount;
     private final List<JobSubCategoryResponse> subCategories;
+    private final int totalCount;
 
-    public static JobCategoryResponse fromEntity(JobCategory jobCategory) {
-        return new JobCategoryResponse(
-            jobCategory.getId(),
-            jobCategory.getTitle(),
-            jobCategory.getTotalCount(),
-            JobSubCategoryResponse.fromEntity(jobCategory.getSubCategories())
-        );
+    public static List<JobCategoryResponse> list(List<JobCategory> categories) {
+        return categories.stream()
+                .map(category -> new JobCategoryResponse(
+                        category.getId(),
+                        category.getTitle(),
+                        category.getSubCategories().stream()
+                                .map(subCategory -> new JobSubCategoryResponse(
+                                        subCategory.getId(),
+                                        subCategory.getTitle(),
+                                        subCategory.getSubCategories().size()
+                                )).toList(),
+                        category.getSubCategories().size()
+                )).toList();
     }
-
 }
