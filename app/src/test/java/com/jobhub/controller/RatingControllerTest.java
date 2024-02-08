@@ -31,7 +31,7 @@ class RatingControllerTest {
     void 별점주기_업데이트_확인() throws Exception {
 
         //given
-        RatingRequest updateRequest = new RatingRequest("user123", 5, "회사 좋아요.");
+        RatingRequest updateRequest = new RatingRequest(1L,"user123", 5, "회사 좋아요.");
         String jsonInput = objectMapper.writeValueAsString(updateRequest);
 
         MultiValueMap<String, String> expectResponseBody = new LinkedMultiValueMap<>();
