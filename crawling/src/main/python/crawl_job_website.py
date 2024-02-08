@@ -6,8 +6,6 @@ import hashlib
 import json
 import requests
 
-from src.main.python.Recruitment import Recruitment
-
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 
@@ -27,8 +25,39 @@ url = [
 ]
 
 
+class Recruitment:
+    def __init__(self, id, url, provider, title, department, career
+                 , company_name, company_address, start_date, end_date, signed_hash):
+        self.id = id
+        self.url = url
+        self.provider = provider
+        self.title = title
+        self.department = department
+        self.career = career
+        self.companyName = company_name
+        self.companyAddress = company_address
+        self.startDate = start_date
+        self.endDate = end_date
+        self.signedHash = signed_hash
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'url': self.url,
+            'provider': self.provider,
+            'title': self.title,
+            'department': self.department,
+            'career': self.career,
+            'companyName': self.companyName,
+            'companyAddress': self.companyAddress,
+            'startDate': self.startDate,
+            'endDate': self.endDate,
+            'signedHash': self.signedHash
+        }
+
+
 def load_page_and_get_hash(specific_url, title, chrome_options):
-    try :
+    try:
         # 상세 페이지용 드라이버
         with webdriver.Chrome(options=chrome_options) as inner_driver:
             inner_driver.get(specific_url)
@@ -43,8 +72,6 @@ def load_page_and_get_hash(specific_url, title, chrome_options):
         print('title : ', title)
         print(e)
         return None
-
-
 
 
 def crawl_jobkorea_website(url):
@@ -100,11 +127,11 @@ def crawl_kakao_website(url):
     job_postings = container.find_elements(By.TAG_NAME, 'a')
     recruitments = []
     for job in job_postings:
-        temp_department = job.find_element(By.XPATH,
-                                           ".//div[contains(@class, 'list_tag')]"
-                                           "//span[contains(text(), 'System')]").text
+        # temp_department = job.find_element(By.XPATH,
+        #                                    ".//div[contains(@class, 'list_tag')]"
+        #                                    "//span[contains(text(), 'System')]").text
         specific_page_url = job.get_attribute('href')
-        department = temp_department.strip("#")
+        # department = temp_department.strip("#")
         title = job.find_element(By.XPATH, './/h4').text
         career = title.split('(')[-1].split(')')[0] if '(' in title and ')' in title else 'N/A'
         end_date = job.find_element(By.XPATH, '//dd[contains(text(), "영입종료시")]').text
@@ -115,7 +142,7 @@ def crawl_kakao_website(url):
             url=specific_page_url,
             provider='Kakao',
             title=title,
-            department=temp_department.strip("#"),
+            department='N/A',
             career=career,
             company_name='Kakao',
             company_address='판교',
@@ -123,6 +150,7 @@ def crawl_kakao_website(url):
             end_date=end_date,
             signed_hash=signed_hash
         )
+        print(recruitment)
         recruitments.append(recruitment.to_dict())
 
     driver.quit()
@@ -285,15 +313,21 @@ def crawl_rocketpunch_website(url):
     return response.status_code
 
 
-try:
-    #  jobkorea_response = crawl_jobkorea_website(url)
-    #  kako_response = crawl_kakao_website(url)
-    # line_response = crawl_line_website(url)
-    # naver_response = crawl_naver_website(url)
-    rocketpunch_response = crawl_rocketpunch_website(url)
-finally:
-    # print(jobkorea_response)
-    # print(kako_response)
-    #  print(line_response)
-    print(rocketpunch_response)
-    print('Finished')
+def main():
+    try:
+        #  jobkorea_response = crawl_jobkorea_website(url)
+        kakao_resposne = crawl_kakao_website(url)
+        print(kakao_resposne)
+        # line_response = crawl_line_website(url)
+        # print(line_response)
+        # naver_response = crawl_naver_website(url)
+        # rocketpunch_response = crawl_rocketpunch_website(url)
+    finally:
+        # print(jobkorea_response)
+        #  print(line_response)
+        # print(rocketpunch_response)
+        print('Finished')
+
+
+if __name__ == "__main__":
+    main()
