@@ -77,8 +77,8 @@ public class Recruitment {
         Objects.requireNonNull(companyName);
         Objects.requireNonNull(signedHash);
         this.url = url;
-        this.provider = provider;
         this.title = title;
+        this.provider = provider;
         this.department = department;
         this.companyName = companyName;
         this.companyAddress = companyAddress;
@@ -86,6 +86,7 @@ public class Recruitment {
         this.endDate = endDate;
         this.signedHash = signedHash;
     }
+
 
     public void change(Recruitment newRecruitment) {
         this.title = newRecruitment.title;

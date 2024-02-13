@@ -6,15 +6,16 @@ import com.jobhub.domain.Recruitment;
 import com.jobhub.global.wrapper.PageResponse;
 import com.jobhub.service.RecruitmentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class RecruitmentController {
                                                              @RequestParam(defaultValue = "1") Integer pageNo,
                                                              @RequestParam(defaultValue = "start_date") String sortBy) {
 
-        List<RecruitmentResponse> responseList = recruitmentService.findAllRecruitment(pageNo, pageSize, sortBy).stream()
+        List<RecruitmentResponse> responseList = recruitmentService.findAllRecruitment(pageNo - 1, pageSize, sortBy).stream()
                 .map(recruitment -> new RecruitmentResponse(
                         recruitment.getId(),
                         recruitment.getUrl(),
@@ -42,7 +43,8 @@ public class RecruitmentController {
                         recruitment.getCompanyName(),
                         recruitment.getCompanyAddress(),
                         recruitment.getStartDate(),
-                        recruitment.getEndDate()
+                        recruitment.getEndDate(),
+                        recruitment.getSignedHash()
                 ))
                 .toList();
 
@@ -52,18 +54,19 @@ public class RecruitmentController {
 
     @PostMapping("/recruitments")
     public ResponseEntity<RecruitmentResponse> createRecruitment(@RequestBody RecruitmentRequest recruitmentRequest) {
-        Recruitment recruitment = recruitmentRequest.toEntity(recruitmentRequest);
+        Recruitment recruitment = RecruitmentRequest.toEntity(recruitmentRequest);
         Recruitment response = recruitmentService.saveRecruitment(recruitment);
         RecruitmentResponse responseDTO = RecruitmentResponse.fromEntity(response);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        return ResponseEntity.created(URI.create("/api/v1/recruitments"))
+                .body(responseDTO);
     }
 
-    @PostMapping("/recruitments/update")
+    @PutMapping("/recruitments/update")
     public ResponseEntity<RecruitmentResponse> updateRecruitment(@RequestBody RecruitmentRequest recruitmentRequest) {
         Recruitment recruitment = RecruitmentRequest.toEntity(recruitmentRequest);
         Recruitment response = recruitmentService.updateRecruitmentIfNeeded(recruitment);
         RecruitmentResponse responseDTO = RecruitmentResponse.fromEntity(response);
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+        return ResponseEntity.ok(responseDTO);
     }
 
 }

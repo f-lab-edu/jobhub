@@ -1,4 +1,5 @@
-/*
+
+
 package com.jobhub.service;
 
 import com.jobhub.domain.Recruitment;
@@ -8,9 +9,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 
@@ -25,6 +32,7 @@ class RecruitmentServiceTest {
 
     @Test
     public void 채용공고_조회() throws Exception {
+
         int pageSize = 20;
         int pageNo = 1;
         String sortBy = "startDate";
@@ -37,6 +45,7 @@ class RecruitmentServiceTest {
                 .companyAddress("서울")
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(10))
+                .signedHash("hash")
                 .build();
 
         Recruitment recruitment2 = Recruitment.builder()
@@ -47,13 +56,14 @@ class RecruitmentServiceTest {
                 .companyAddress("도쿄")
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(10))
+                .signedHash("hash2")
                 .build();
 
         List<Recruitment> recruitments = new ArrayList<>();
         recruitments.add(recruitment1);
-        recruitments.add(recruitment2);
 
-        given(this.recruitmentRepository.findAll(pageNo, pageSize, sortBy)).willReturn(recruitments);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+        given(this.recruitmentRepository.findAll(pageable)).willReturn(new PageImpl<>(recruitments));
 
         List<Recruitment> actualList = this.recruitmentService.findAllRecruitment(pageNo, pageSize, sortBy);
 
@@ -62,4 +72,3 @@ class RecruitmentServiceTest {
     }
 
 }
-*/

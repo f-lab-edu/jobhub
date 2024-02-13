@@ -3,6 +3,10 @@ package com.jobhub.service;
 import com.jobhub.domain.Recruitment;
 import com.jobhub.repository.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +23,9 @@ public class RecruitmentService {
     }
 
     public List<Recruitment> findAllRecruitment(Integer pageNo, Integer pageSize, String sortBy) {
-       return null;
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
+        Page<Recruitment> recruitments = recruitmentRepository.findAll(pageable);
+        return recruitments.getContent();
     }
 
     @Transactional

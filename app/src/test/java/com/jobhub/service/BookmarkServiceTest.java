@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -42,6 +43,7 @@ class BookmarkServiceTest {
                 .companyAddress("서울")
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(10))
+                .signedHash("hash")
                 .build();
 
         Bookmark bookMark = Bookmark.builder()
@@ -67,10 +69,12 @@ class BookmarkServiceTest {
                 .url("url")
                 .provider("jobKorea")
                 .title("쿠팡 프론트엔드 개발자")
+                .department("엔지니어")
                 .companyName("쿠팡")
                 .companyAddress("서울")
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(10))
+                .signedHash("hash")
                 .build();
 
         Bookmark bookMark = Bookmark.builder()
@@ -78,11 +82,11 @@ class BookmarkServiceTest {
                 .recruitment(recruitment)
                 .build();
 
-        given(this.bookMarkRepository.findByUserId(anyString())).willReturn(bookMark);
+        given(this.bookMarkRepository.findAllByUserId(anyString())).willReturn(List.of(bookMark));
 
-        Bookmark actualBookMark = bookmarkService.findBookmark("user123");
+        List<Bookmark> actualBookMark = bookmarkService.findBookmarks("user123");
 
-        assertThat(actualBookMark).isEqualTo(bookMark);
+        assertThat(actualBookMark).isEqualTo(List.of(bookMark));
 
     }
 

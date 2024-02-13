@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public class RatingResponse {
-    private final Long id;
     private final String userId;
     private final Long recruitmentId;
     private final int star;
@@ -15,7 +14,6 @@ public class RatingResponse {
 
     public static RatingResponse fromEntity(final Rating rating) {
         return new RatingResponse(
-                rating.getId(),
                 rating.getUserId(),
                 rating.getRecruitment().getId(),
                 rating.getStar(),

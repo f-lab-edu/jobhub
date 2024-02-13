@@ -16,6 +16,7 @@ public class RecruitmentResponse {
     private final String companyAddress;
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
+    private final String signedHash;
 
     public static RecruitmentResponse fromEntity(final Recruitment recruitment) {
         return new RecruitmentResponse(
@@ -26,7 +27,8 @@ public class RecruitmentResponse {
                 recruitment.getCompanyName(),
                 recruitment.getCompanyAddress(),
                 recruitment.getStartDate(),
-                recruitment.getEndDate()
+                recruitment.getEndDate(),
+                recruitment.getSignedHash()
         );
 
     }

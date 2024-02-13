@@ -7,6 +7,8 @@ import com.jobhub.repository.RecruitmentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class BookmarkService {
@@ -14,8 +16,8 @@ public class BookmarkService {
     private final RecruitmentRepository recruitmentRepository;
     private final BookmarkRepository bookmarkRepository;
 
-    public Bookmark findBookmark(String userId) {
-        return bookmarkRepository.findByUserId(userId);
+    public List<Bookmark> findBookmarks(String userId) {
+        return bookmarkRepository.findAllByUserId(userId);
     }
 
     public Bookmark saveBookmark(String userId, Long recruitmentId) {

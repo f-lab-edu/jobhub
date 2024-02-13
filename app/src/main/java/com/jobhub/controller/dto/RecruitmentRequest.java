@@ -18,6 +18,7 @@ public class RecruitmentRequest {
     private final String companyAddress;
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
+    private final String signedHash;
 
 
     public static Recruitment toEntity(RecruitmentRequest recruitmentRequest) {
@@ -30,6 +31,7 @@ public class RecruitmentRequest {
                 .companyAddress(recruitmentRequest.getCompanyAddress())
                 .startDate(recruitmentRequest.getStartDate())
                 .endDate(recruitmentRequest.getEndDate())
+                .signedHash(recruitmentRequest.signedHash)
                 .build();
     }
 

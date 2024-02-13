@@ -40,6 +40,7 @@ class RatingServiceTest {
                 .companyAddress("서울")
                 .startDate(LocalDateTime.now())
                 .endDate(LocalDateTime.now().plusDays(10))
+                .signedHash("hash")
                 .build();
 
         Rating rating = Rating.builder()
