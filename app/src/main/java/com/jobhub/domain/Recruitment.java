@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import java.util.Objects;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Setter
 @Entity
 @Table(name = "recruitment",
         uniqueConstraints={
@@ -85,12 +87,5 @@ public class Recruitment {
         this.startDate = startDate;
         this.endDate = endDate;
         this.signedHash = signedHash;
-    }
-
-
-    public void change(Recruitment newRecruitment) {
-        this.title = newRecruitment.title;
-        this.startDate = newRecruitment.startDate;
-        this.endDate = newRecruitment.endDate;
     }
 }

@@ -116,7 +116,7 @@ class RecruitmentControllerTest {
                 ,"서울"
                 ,LocalDateTime.of(2021,8,1,0,0)
                 ,LocalDateTime.of(2021,8,31,0,0)
-                ,"hash2");
+                ,"hash");
 
         //when
         ResultActions resultActions = mockMvc.perform(put("/api/v1/recruitments/update")
