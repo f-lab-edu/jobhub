@@ -8,3 +8,4 @@ plugins {
 
 rootProject.name = 'jobhub'
 include('app')
+include('crawling')
