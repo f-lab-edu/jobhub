@@ -1,0 +1,44 @@
+services:
+  db:
+    ports:
+      - 5433:5432
+    container_name: jobhub_pg
+    image: postgres
+    environment:
+      POSTGRES_DB: jobhub
+      POSTGRES_USER: docker_user
+      POSTGRES_PASSWORD: 12345
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+  backend:
+    build:
+      dockerfile: ./dockerfiles/java.dockerfile
+    container_name: jobhub_java
+    ports:
+      - 8080:8080
+    environment:
+      db_url: jdbc:postgresql://db:5432/jobhub
+      db_user: docker_user
+      db_password: 12345
+    depends_on:
+        - db
+    restart: always
+#  python-backend:
+#    build:
+#      dockerfile: ./dockerfiles/python.dockerfile
+#    container_name: jobhub_python
+#    ports:
+#      - 5000:5000
+#    environment:
+#      db_url: jdbc:postgresql://db:5433/jobhub_pg
+#      db_user: docker_user
+#      db_password: 1234
+#    depends_on:
+#        - java-backend
+#    restart: always
+
+volumes:
+  pgdata:
+    external: true
+    name: jobhubvol
