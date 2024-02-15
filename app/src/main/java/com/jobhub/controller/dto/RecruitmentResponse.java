@@ -1,8 +1,8 @@
 package com.jobhub.controller.dto;
 
+import com.jobhub.domain.Recruitment;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
 import java.time.LocalDateTime;
 
 @RequiredArgsConstructor
@@ -16,4 +16,21 @@ public class RecruitmentResponse {
     private final String companyAddress;
     private final LocalDateTime startDate;
     private final LocalDateTime endDate;
+    private final String signedHash;
+
+    public static RecruitmentResponse fromEntity(final Recruitment recruitment) {
+        return new RecruitmentResponse(
+                recruitment.getId(),
+                recruitment.getUrl(),
+                recruitment.getProvider(),
+                recruitment.getTitle(),
+                recruitment.getCompanyName(),
+                recruitment.getCompanyAddress(),
+                recruitment.getStartDate(),
+                recruitment.getEndDate(),
+                recruitment.getSignedHash()
+        );
+
+    }
+
 }

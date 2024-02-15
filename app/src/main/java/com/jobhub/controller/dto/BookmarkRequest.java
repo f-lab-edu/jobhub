@@ -7,5 +7,5 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class BookmarkRequest {
     private final String userId;
-    private final Boolean isBookmark;
+    private final Long recruitmentId;
 }
