@@ -51,13 +51,26 @@ public class RecruitmentController {
         return new PageResponse<>(responseList.size(), responseList);
     }
 
-
+    // receive crawling data from python
     @PostMapping("/recruitments")
+    public ResponseEntity<List<RecruitmentResponse>> createRecruitment(@RequestBody  List<RecruitmentRequest> recruitmentRequest) {
+        List<Recruitment> recruitments = recruitmentRequest.stream()
+                .map(RecruitmentRequest::toEntity)
+                .toList();
+        List<Recruitment> response = recruitmentService.saveAll(recruitments);
+        List<RecruitmentResponse> responseDTO = response.stream()
+                .map(RecruitmentResponse::fromEntity)
+                .toList();
+        return ResponseEntity.created(URI.create("/api/v1/recruitments"))
+                .body(responseDTO);
+    }
+
+    @PostMapping("/recruitment")
     public ResponseEntity<RecruitmentResponse> createRecruitment(@RequestBody RecruitmentRequest recruitmentRequest) {
         Recruitment recruitment = RecruitmentRequest.toEntity(recruitmentRequest);
         Recruitment response = recruitmentService.saveRecruitment(recruitment);
         RecruitmentResponse responseDTO = RecruitmentResponse.fromEntity(response);
-        return ResponseEntity.created(URI.create("/api/v1/recruitments"))
+        return ResponseEntity.created(URI.create("/api/v1/recruitment"))
                 .body(responseDTO);
     }
 
