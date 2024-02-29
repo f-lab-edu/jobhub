@@ -12,7 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -35,16 +37,11 @@ class BookmarkServiceTest {
     @Test
     public void 즐겨찾기_생성() throws Exception {
         // Given
-        Recruitment recruitment = Recruitment.builder()
-                .url("url")
-                .provider("jobKorea")
-                .title("쿠팡 프론트엔드 개발자")
-                .companyName("쿠팡")
-                .companyAddress("서울")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusDays(10))
-                .signedHash("hash")
-                .build();
+        Recruitment recruitment = createRecruitment(
+                "jobKorea",
+                "쿠팡 프론트엔드 개발자",
+                "쿠팡",
+                "서울");
 
         Bookmark bookMark = Bookmark.builder()
                 .userId("user123")
@@ -65,17 +62,11 @@ class BookmarkServiceTest {
     @Test
     public void 해당_아이디_즐겨찾기_조회() throws Exception {
 
-        Recruitment recruitment = Recruitment.builder()
-                .url("url")
-                .provider("jobKorea")
-                .title("쿠팡 프론트엔드 개발자")
-                .department("엔지니어")
-                .companyName("쿠팡")
-                .companyAddress("서울")
-                .startDate(LocalDateTime.now())
-                .endDate(LocalDateTime.now().plusDays(10))
-                .signedHash("hash")
-                .build();
+        Recruitment recruitment = createRecruitment(
+                "jobKorea",
+                "쿠팡 프론트엔드 개발자",
+                "쿠팡",
+                "서울");
 
         Bookmark bookMark = Bookmark.builder()
                 .userId("user123")
@@ -86,8 +77,39 @@ class BookmarkServiceTest {
 
         List<Bookmark> actualBookMark = bookmarkService.findBookmarks("user123");
 
+        assertThat(actualBookMark).hasSize(1);
         assertThat(actualBookMark).isEqualTo(List.of(bookMark));
 
+    }
+
+
+    @Test
+    public void 해당_아이디_즐겨찾기_조회시_없음() throws Exception {
+        given(this.bookMarkRepository.findAllByUserId(anyString())).willReturn(List.of());
+        List<Bookmark> actualBookMark = bookmarkService.findBookmarks("user123");
+        assertThat(actualBookMark).isEqualTo(List.of());
+    }
+
+    @Test
+    public void 존재하지_않는_채용공고에_즐겨찾기_추가() throws Exception {
+        Long recruitmentId = 99999L;
+        given(this.recruitmentRepository.findById(any())).willReturn(Optional.empty());
+        assertThatThrownBy(() -> bookmarkService.saveBookmark("user123", recruitmentId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Recruitment not found with id: " + recruitmentId);
+    }
+
+    private Recruitment createRecruitment(String provider, String title, String companyName, String companyAddress) {
+        return Recruitment.builder()
+                .url("url")
+                .provider(provider)
+                .title(title)
+                .companyName(companyName)
+                .companyAddress(companyAddress)
+                .startDate(LocalDateTime.now())
+                .endDate(LocalDateTime.now().plusDays(10))
+                .signedHash("hash")
+                .build();
     }
 
 }
