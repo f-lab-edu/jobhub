@@ -16,12 +16,12 @@ public class LocationCategoryResponse {
 
     public static LocationCategoryResponse fromEntity(LocationCategory locationCategory) {
         List<LocationSubCategoryResponse> subCategories = locationCategory.getSubCategories().stream()
-                .map(o -> new LocationSubCategoryResponse(o.getId(), o.getName()))
+                .map(o -> new LocationSubCategoryResponse(o.getId(), o.getTitle()))
                 .toList(); // Convert the Stream to a List
 
         return new LocationCategoryResponse(
                 locationCategory.getId(),
-                locationCategory.getName(),
+                locationCategory.getTitle(),
                 subCategories
         );
     }

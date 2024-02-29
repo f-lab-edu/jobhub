@@ -27,7 +27,7 @@ public class LocationCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -37,8 +37,8 @@ public class LocationCategory {
     private List<LocationCategory> subCategories = new ArrayList<>();
 
     @Builder
-    public LocationCategory(String name, LocationCategory parent, List<LocationCategory> subCategories) {
-        this.name = name;
+    public LocationCategory(String title, LocationCategory parent, List<LocationCategory> subCategories) {
+        this.title = title;
         this.parent = parent;
         this.subCategories = subCategories;
     }
