@@ -24,6 +24,10 @@ public class RecruitmentService {
         return recruitmentRepository.save(recruitment);
     }
 
+    public List<Recruitment> saveAll(List<Recruitment> recruitments) {
+        return recruitmentRepository.saveAll(recruitments);
+    }
+
     public List<Recruitment> findAllRecruitment(Integer pageNo, Integer pageSize, String sortBy) {
         Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.Direction.DESC, sortBy);
         Page<Recruitment> recruitments = recruitmentRepository.findAll(pageable);

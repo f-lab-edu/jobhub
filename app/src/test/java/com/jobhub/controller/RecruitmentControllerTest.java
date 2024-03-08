@@ -40,7 +40,25 @@ class RecruitmentControllerTest {
     void 저장된_채용공고_조회() throws Exception {
 
         //given
-        callCreateRecruitment();
+        LocalDateTime startDateTime = LocalDateTime.now();
+        LocalDateTime endDateTime = LocalDateTime.now().plusDays(30);
+        RecruitmentRequest recruitmentRequest = new RecruitmentRequest(
+                "https://www.Line.com",
+                "라인",
+                "라인 백엔드 엔지니어",
+                "백엔드",
+                "신입",
+                "라인",
+                "도쿄",
+                startDateTime,
+                endDateTime,
+                "hash");
+
+        mockMvc.perform(post("/api/v1/recruitment")
+                        .content(objectMapper.writeValueAsString(recruitmentRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
 
         //when
         ResultActions resultActions = mockMvc.perform(get("/api/v1/recruitments")
@@ -51,6 +69,9 @@ class RecruitmentControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
+        String actualResponseBody = resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
+        RecruitmentResponse recruitmentResponse = objectMapper.readValue(actualResponseBody, RecruitmentResponse.class);
+
         MvcResult result = resultActions.andReturn();
         String contentAsString = result.getResponse().getContentAsString(StandardCharsets.UTF_8);
         TypeReference<PageResponse<RecruitmentResponse>> typeReference =
@@ -60,25 +81,23 @@ class RecruitmentControllerTest {
         RecruitmentResponse response1 = pageResponse.getContents().get(0);
 
         //the
-        assertThat(response1.getCompanyName()).isEqualTo("라인");
-        assertThat(response1.getCompanyAddress()).isEqualTo("도쿄");
-
+        assertThat(response1)
+                .extracting("provider"
+                        , "companyName"
+                        , "companyAddress"
+                        , "title"
+                        , "startDate"
+                        , "endDate")
+                        .contains("라인", "라인", "도쿄", "라인 백엔드 엔지니어", startDateTime, endDateTime);
     }
 
     @Test
     void 채용공고_등록() throws Exception {
 
-        //given & when
-        RecruitmentResponse recruitmentResponse = callCreateRecruitment();
-        //then;
+        //given
+        LocalDateTime startDateTime = LocalDateTime.now();
+        LocalDateTime endDateTime = LocalDateTime.now().plusDays(30);
 
-        assertThat(recruitmentResponse.getCompanyName()).isEqualTo("라인");
-        assertThat(recruitmentResponse.getCompanyAddress()).isEqualTo("도쿄");
-        assertThat(recruitmentResponse.getTitle()).isEqualTo("라인 백엔드 엔지니어");
-
-    }
-
-    private RecruitmentResponse callCreateRecruitment() throws Exception {
         RecruitmentRequest recruitmentRequest
                 = new RecruitmentRequest(
                 "https://www.Line.com"
@@ -88,24 +107,50 @@ class RecruitmentControllerTest {
                 ,"신입"
                 ,"라인"
                 ,"도쿄"
-                ,LocalDateTime.of(2021,8,1,0,0)
-                ,LocalDateTime.of(2021,8,31,0,0)
+                ,startDateTime
+                ,endDateTime
                 ,"hash");
 
-        ResultActions resultActions = mockMvc.perform(post("/api/v1/recruitments")
+        //when
+        ResultActions resultActions = mockMvc.perform(post("/api/v1/recruitment")
                         .content(objectMapper.writeValueAsString(recruitmentRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated());
 
         String actualResponseBody = resultActions.andReturn().getResponse().getContentAsString(StandardCharsets.UTF_8);
-        return objectMapper.readValue(actualResponseBody, RecruitmentResponse.class);
+        RecruitmentResponse recruitmentResponse = objectMapper.readValue(actualResponseBody, RecruitmentResponse.class);
+
+        //then;
+        assertThat(recruitmentResponse.getCompanyName()).isEqualTo("라인");
+        assertThat(recruitmentResponse.getCompanyAddress()).isEqualTo("도쿄");
+        assertThat(recruitmentResponse.getTitle()).isEqualTo("라인 백엔드 엔지니어");
+
     }
 
     @Test
     void 채용공고_수정() throws Exception {
 
         //given
-        callCreateRecruitment();
+        LocalDateTime startDateTime = LocalDateTime.now();
+        LocalDateTime endDateTime = LocalDateTime.now().plusDays(30);
+        RecruitmentRequest recruitmentRequest
+                = new RecruitmentRequest(
+                "https://www.Line.com"
+                ,"라인"
+                ,"라인 백엔드 엔지니어"
+                ,"백엔드"
+                ,"신입"
+                ,"라인"
+                ,"도쿄"
+                ,startDateTime
+                ,endDateTime
+                ,"hash");
+
+        mockMvc.perform(post("/api/v1/recruitment")
+                        .content(objectMapper.writeValueAsString(recruitmentRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+
         RecruitmentRequest updateRequest = new RecruitmentRequest(
                 "https://www.Line.com"
                 ,"라인"
@@ -114,8 +159,8 @@ class RecruitmentControllerTest {
                 ,"신입"
                 ,"라인"
                 ,"서울"
-                ,LocalDateTime.of(2021,8,1,0,0)
-                ,LocalDateTime.of(2021,8,31,0,0)
+                ,startDateTime
+                ,endDateTime
                 ,"hash");
 
         //when
@@ -131,5 +176,4 @@ class RecruitmentControllerTest {
         assertThat(actualResponse.getTitle()).isEqualTo("라인 백엔드 엔지니어 (서울)");
         assertThat(actualResponse.getCompanyAddress()).isEqualTo("서울");
     }
-
 }
